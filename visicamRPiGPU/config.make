@@ -8,7 +8,7 @@
 #   The location of your root openFrameworks installation
 #       (default) OF_ROOT = ../../.. 
 ################################################################################
-OF_ROOT = ../../..
+OF_ROOT = ../of_v0.8.4_linuxarmv7l_release
 
 ################################################################################
 # PROJECT ROOT
