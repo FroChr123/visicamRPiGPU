@@ -53,6 +53,31 @@ fi
 
 echo ""
 echo "#######################################################################"
+echo "Clear directories if they already exist"
+echo "#######################################################################"
+echo ""
+
+if ! [ -d "of_v0.8.4_linuxarmv7l_release" ]
+then
+    command_success "rm -R of_v0.8.4_linuxarmv7l_release"
+    echo "Removed directory of_v0.8.4_linuxarmv7l_release"
+fi
+
+if ! [ -d "visicamRPiGPU/bin" ]
+then
+    command_success "rm -R visicamRPiGPU/bin"
+    echo "Removed directory visicamRPiGPU/bin"
+fi
+
+if ! [ -d "visicamRPiGPU/obj" ]
+then
+    command_success "rm -R visicamRPiGPU/obj"
+    echo "Removed directory visicamRPiGPU/obj"
+fi
+
+
+echo ""
+echo "#######################################################################"
 echo "Unpack openFrameworks"
 echo "#######################################################################"
 echo ""
@@ -75,11 +100,11 @@ echo ""
 ORIGINALDIR=$( pwd )
 
 # Really need to change directory here as it seems, otherwise it will not install correctly
-command_success "cd of_v0.8.4_linuxarmv7l_release/scripts/linux/debian"
+cd "of_v0.8.4_linuxarmv7l_release/scripts/linux/debian"
 command_success "./install_dependencies.sh"
 
 # Change back to original directory
-command_success "cd $ORIGINALDIR"
+cd "$ORIGINALDIR"
 
 echo ""
 echo "#######################################################################"
