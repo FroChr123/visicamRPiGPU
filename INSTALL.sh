@@ -57,19 +57,19 @@ echo "Clear directories if they already exist"
 echo "#######################################################################"
 echo ""
 
-if ! [ -d "of_v0.8.4_linuxarmv7l_release" ]
+if [ -d "of_v0.8.4_linuxarmv7l_release" ]
 then
     command_success "rm -R of_v0.8.4_linuxarmv7l_release"
     echo "Removed directory of_v0.8.4_linuxarmv7l_release"
 fi
 
-if ! [ -d "visicamRPiGPU/bin" ]
+if [ -d "visicamRPiGPU/bin" ]
 then
     command_success "rm -R visicamRPiGPU/bin"
     echo "Removed directory visicamRPiGPU/bin"
 fi
 
-if ! [ -d "visicamRPiGPU/obj" ]
+if [ -d "visicamRPiGPU/obj" ]
 then
     command_success "rm -R visicamRPiGPU/obj"
     echo "Removed directory visicamRPiGPU/obj"
