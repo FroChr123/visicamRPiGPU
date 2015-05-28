@@ -46,7 +46,9 @@ echo "#######################################################################"
 echo "Setting special compile flags for Raspberry Pi 2"
 echo "#######################################################################"
 echo ""
-command_success "export MAKEFLAGS=-j4 PLATFORM_VARIANT=rpi2"
+
+# Note: This seems to be session dependant, do not eval it with command_success
+export MAKEFLAGS=-j4 PLATFORM_VARIANT=rpi2
 
 echo ""
 echo "#######################################################################"
