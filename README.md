@@ -3,7 +3,7 @@ visicamRPiGPU uses the hardware acceleration of the Raspberry Pi 2 (OS: Raspbian
 
 VisiCam and visicamRPiGPU need to work together to fulfil the task of providing perspective corrected camera images.
 
-By using the hardware acceleration OpenMAX IL (https://www.khronos.org/openmax/il/) it is able to capture, correct, convert and save an image every 50 ms for a recommended resolution of 1280 x 720 pixels.
+By using the hardware acceleration OpenMAX IL (https://www.khronos.org/openmax/il/) it is able to capture, correct, convert, compress and save an image every 50 ms for a recommended resolution of 1280 x 720 pixels.
 
 You can find more detailed information in the bash scripts and source files.
 
