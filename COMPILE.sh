@@ -29,27 +29,35 @@ function command_success
 {
     if ! ( eval "$1" )
     then
+        echo ""
         echo "#######################################################################"
         echo "Error in command '$1'"
         echo "Quit with errors"
         echo "#######################################################################"
+        echo ""
         exit 1
     fi
 
     return 0
 }
 
+echo ""
 echo "#######################################################################"
 echo "Setting special compile flags for Raspberry Pi 2"
 echo "#######################################################################"
+echo ""
 command_success "export MAKEFLAGS=-j4 PLATFORM_VARIANT=rpi2"
 
+echo ""
 echo "#######################################################################"
 echo "Start compile"
 echo "#######################################################################"
+echo ""
 command_success "make -C visicamRPiGPU"
 
+echo ""
 echo "#######################################################################"
 echo "Finished compile"
 echo "Binary is located in: visicamRPiGPU/bin/visicamRPiGPU"
 echo "#######################################################################"
+echo ""

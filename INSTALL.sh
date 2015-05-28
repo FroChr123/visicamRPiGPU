@@ -29,10 +29,12 @@ function command_success
 {
     if ! ( eval "$1" )
     then
+        echo ""
         echo "#######################################################################"
         echo "Error in command '$1'"
         echo "Quit with errors"
         echo "#######################################################################"
+        echo ""
         exit 1
     fi
 
@@ -41,29 +43,39 @@ function command_success
 
 if [[ $EUID -ne 0 ]]
 then
+    echo ""
     echo "#######################################################################"
     echo "Installer must be started as root, try sudo command"
     echo "#######################################################################"
+    echo ""
     exit 1
 fi
 
+echo ""
 echo "#######################################################################"
 echo "Unpack openFrameworks"
 echo "#######################################################################"
+echo ""
 command_success "tar xvf of_v0.8.4_linuxarmv7l_release.tar.gz"
 
+echo ""
 echo "#######################################################################"
 echo "Copy makefiles for Raspberry Pi 2 to openFrameworks"
 echo "#######################################################################"
+echo ""
 command_success "cp config.linuxarmv7l.rpi2.mk of_v0.8.4_linuxarmv7l_release/libs/openFrameworksCompiled/project/linuxarmv7l/config.linuxarmv7l.rpi2.mk"
 
+echo ""
 echo "#######################################################################"
 echo "Install dependencies of openFrameworks"
 echo "#######################################################################"
+echo ""
 command_success "of_v0.8.4_linuxarmv7l_release/scripts/linux/debian/install_dependencies.sh"
 
+echo ""
 echo "#######################################################################"
 echo "Finished install"
 echo "Consider increasing your GPU memory split"
 echo "You can compile now"
 echo "#######################################################################"
+echo ""
