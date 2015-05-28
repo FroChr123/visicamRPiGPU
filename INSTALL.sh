@@ -70,7 +70,16 @@ echo "#######################################################################"
 echo "Install dependencies of openFrameworks"
 echo "#######################################################################"
 echo ""
-command_success "of_v0.8.4_linuxarmv7l_release/scripts/linux/debian/install_dependencies.sh"
+
+# Store current directory
+ORIGINALDIR=$( pwd )
+
+# Really need to change directory here as it seems, otherwise it will not install correctly
+command_success "cd of_v0.8.4_linuxarmv7l_release/scripts/linux/debian"
+command_success "./install_dependencies.sh"
+
+# Change back to original directory
+command_success "cd $ORIGINALDIR"
 
 echo ""
 echo "#######################################################################"
