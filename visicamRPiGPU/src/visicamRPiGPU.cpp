@@ -734,6 +734,10 @@ void visicamRPiGPU::setup()
                               0.0f,                           0.0f,                           0.0f,                           0.0f,
                               homographyInputMatrixValues[2], homographyInputMatrixValues[5], 0.0f, homographyInputMatrixValues[8]);
 
+    // Allocate default render FBO and render everything into it
+    defaultRenderOutputFbo.allocate(width, height, GL_RGBA);
+    defaultRenderOutputFbo.begin();
+
     // Allocate buffer for screen pixels and empty buffer
     OMXscreenPixelBuffer = (GLubyte*)(malloc(4 * width * height));
     memset(OMXscreenPixelBuffer, 0, 4 * width * height * sizeof(GLubyte));
@@ -971,25 +975,16 @@ void visicamRPiGPU::update()
     VCOSwaitEvent(&OMXeglRenderComponent, VCOS_EVENT_FILL_BUFFER_DONE);
 
     // Prepare output image (from previous iteration)
-    // Check if we should output rendered image or original captured image
-    if (!outputCapturedOriginalImage)
-    {
-        // Read pixels from current rendered screen into memory buffer
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, OMXscreenPixelBuffer);
-    }
-    else
-    {
-        // Bind eglRenderOutputFbo by using FBO id eglRenderOutputFbo.getFbo()
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, eglRenderOutputFbo.getFbo());
+    // Check if we should output rendered image or original captured image, choose correct FBO
+    // Bind eglRenderOutputFbo by using FBO id
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, (outputCapturedOriginalImage ? eglRenderOutputFbo.getFbo() : defaultRenderOutputFbo.getFbo()));
 
-        // Read pixels from eglRenderOutputFbo into memory buffer
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, OMXscreenPixelBuffer);
+    // Read pixels from eglRenderOutputFbo into memory buffer
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, OMXscreenPixelBuffer);
 
-        // Reset to default FBO by using 0 for default FBO id
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, 0);
-    }
+    // Reset to default FBO by using 0 for default FBO id
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, 0);
 
     // OMXimageEncodeComponent: Hand back the output buffer to the component
     if (OMX_FillThisBuffer(OMXimageEncodeComponent.handle, OMXimageEncodeOutputBufferHeader))

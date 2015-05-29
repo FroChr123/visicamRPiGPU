@@ -113,7 +113,8 @@ int main(int argc, char *argv[])
     ofSetCurrentRenderer(ofGLProgrammableRenderer::TYPE);
 
     // Setup OpenGL context
-    ofSetupOpenGL(app.width, app.height, OF_WINDOW);
+    // Just create a window of 1 pixel, can not hide the output window completely
+    ofSetupOpenGL(1, 1, OF_WINDOW);
 
     // Run app
     ofRunApp(&app);

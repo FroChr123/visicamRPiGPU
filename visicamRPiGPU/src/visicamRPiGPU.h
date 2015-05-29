@@ -195,4 +195,5 @@ class visicamRPiGPU : public ofBaseApp
         bool outputCapturedOriginalImage;
         float homographyInputMatrixValues[9];
         ofMatrix4x4 homographyInputMatrix;
+        ofFbo defaultRenderOutputFbo;
 };
