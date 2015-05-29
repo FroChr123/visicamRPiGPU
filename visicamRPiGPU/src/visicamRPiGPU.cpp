@@ -734,9 +734,8 @@ void visicamRPiGPU::setup()
                               0.0f,                           0.0f,                           0.0f,                           0.0f,
                               homographyInputMatrixValues[2], homographyInputMatrixValues[5], 0.0f, homographyInputMatrixValues[8]);
 
-    // Allocate default render FBO and render everything into it
+    // Allocate default render FBO
     defaultRenderOutputFbo.allocate(width, height, GL_RGBA);
-    defaultRenderOutputFbo.begin();
 
     // Allocate buffer for screen pixels and empty buffer
     OMXscreenPixelBuffer = (GLubyte*)(malloc(4 * width * height));
@@ -1044,6 +1043,9 @@ void visicamRPiGPU::update()
 // Note: draw is always called after update in infinite loop
 void visicamRPiGPU::draw()
 {
+    // Draw into default render FBO
+    defaultRenderOutputFbo.begin();
+
     // Projection mode: Mirror displayed image on y axis
     // OpenGL writes images from bottom to top, but top to buttom is needed for output image
     ofSetMatrixMode(OF_MATRIX_PROJECTION);
@@ -1064,4 +1066,7 @@ void visicamRPiGPU::draw()
     // Restore previous state of projection matrix
     ofSetMatrixMode(OF_MATRIX_PROJECTION);
     ofPopMatrix();
+
+    // Stop draw into default render FBO
+    defaultRenderOutputFbo.end();
 }
