@@ -1046,12 +1046,6 @@ void visicamRPiGPU::draw()
     // Draw into default render FBO
     defaultRenderOutputFbo.begin();
 
-    // Projection mode: Mirror displayed image on y axis
-    // OpenGL writes images from bottom to top, but top to buttom is needed for output image
-    ofSetMatrixMode(OF_MATRIX_PROJECTION);
-    ofPushMatrix();
-    ofScale(1.0f, -1.0f, 1.0f);
-
     // Perform homography matrix multiplication in modelview mode to texture of eglRenderOutputFbo
     ofSetMatrixMode(OF_MATRIX_MODELVIEW);
     ofPushMatrix();
@@ -1061,10 +1055,6 @@ void visicamRPiGPU::draw()
 
     // Draw image to modified modelview and restore previous matrix
     eglRenderOutputFbo.draw(0, 0);
-    ofPopMatrix();
-
-    // Restore previous state of projection matrix
-    ofSetMatrixMode(OF_MATRIX_PROJECTION);
     ofPopMatrix();
 
     // Stop draw into default render FBO
