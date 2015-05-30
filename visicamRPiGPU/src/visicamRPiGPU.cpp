@@ -96,14 +96,14 @@ void VCOSwaitEvent(OMXComponent* component, VCOS_UNSIGNED waitEvents)
     if (vcos_event_flags_get(&component->vcos_flags, waitEvents | VCOS_EVENT_ERROR, VCOS_OR_CONSUME, VCOS_SUSPEND, &VCOSresult))
     {
         printf("OMX Error: VCOS wait event - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // If result contains error, exit application
     if (VCOSresult & VCOS_EVENT_ERROR)
     {
         printf("OMX Error: VCOS wait event error - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -130,7 +130,7 @@ void OMXInitializeComponent(OMXComponent* component, OMX_U32 id, const char* nam
     if (vcos_event_flags_create(&component->vcos_flags, name))
     {
         printf("OMX Error: VCOS flags component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup component: Callbacks
@@ -143,7 +143,7 @@ void OMXInitializeComponent(OMXComponent* component, OMX_U32 id, const char* nam
     if (OMX_GetHandle(&component->handle, component->name, component, &OMXcallbacks))
     {
         printf("OMX Error: OMX get component %s handle - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -154,7 +154,7 @@ void OMXSetStateComponent(OMXComponent* component, OMX_STATETYPE state)
     if (OMX_SendCommand(component->handle, OMX_CommandStateSet, state, NULL))
     {
         printf("OMX Error: OMX set state on component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -165,7 +165,7 @@ void OMXPortEnableDisableComponent(OMXComponent* component, OMX_U32 port, bool e
     if (OMX_SendCommand(component->handle, (enable ? OMX_CommandPortEnable : OMX_CommandPortDisable), port, NULL))
     {
         printf("OMX Error: OMX enable or disable port on component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -177,7 +177,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (component->id != OMX_COMPONENT_CAMERA_ID)
     {
         printf("OMX Error: Setup camera called on wrong component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Enable callback on configuration change OMX_IndexParamCameraDeviceNumber
@@ -190,7 +190,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigRequestCallback, &OMXcameraCallbackConfigParamEnable))
     {
         printf("OMX Error: OMX enable config and parameter callback camera - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Set device id 0
@@ -202,7 +202,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetParameter(component->handle, OMX_IndexParamCameraDeviceNumber, &OMXcameraParameterDevice))
     {
         printf("OMX Error: OMX set camera device id - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Blocking wait for setting camera device id
@@ -218,7 +218,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_GetParameter(component->handle, OMX_IndexParamCommonSensorMode, &OMXcameraSensor))
     {
         printf("OMX Error: OMX get camera sensor settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     OMXcameraSensor.bOneShot = OMX_FALSE;
@@ -228,7 +228,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetParameter(component->handle, OMX_IndexParamCommonSensorMode, &OMXcameraSensor))
     {
         printf("OMX Error: OMX set camera sensor settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Get port settings, real video port
@@ -239,7 +239,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_GetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXcameraPortRealVideo))
     {
         printf("OMX Error: OMX get camera real video port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Set port settings, real video port
@@ -254,7 +254,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXcameraPortRealVideo))
     {
         printf("OMX Error: OMX set camera real video port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Get port settings, preview video port
@@ -265,7 +265,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_GetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXcameraPortPreview))
     {
         printf("OMX Error: OMX get camera preview video port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Set port settings, preview video port
@@ -281,7 +281,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXcameraPortPreview))
     {
         printf("OMX Error: OMX set camera preview video port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Sharpness
@@ -293,7 +293,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonSharpness, &OMXcameraSharpness))
     {
         printf("OMX Error: OMX set camera setting Sharpness - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Contrast
@@ -305,7 +305,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonContrast, &OMXcameraContrast))
     {
         printf("OMX Error: OMX set camera setting Contrast - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Saturation
@@ -317,7 +317,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonSaturation, &OMXcameraSaturation))
     {
         printf("OMX Error: OMX set camera setting Saturation - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Brightness
@@ -329,7 +329,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonBrightness, &OMXcameraBrightness))
     {
         printf("OMX Error: OMX set camera setting Brightness - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Exposure value
@@ -346,7 +346,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonExposureValue, &OMXcameraExposureValue))
     {
         printf("OMX Error: OMX set camera setting Exposure value - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Exposure control
@@ -358,7 +358,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonExposure, &OMXcameraExposureControl))
     {
         printf("OMX Error: OMX set camera setting Exposure control - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Frame stabilisation
@@ -370,7 +370,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonFrameStabilisation, &OMXcameraFrameStabilisation))
     {
         printf("OMX Error: OMX set camera setting Frame stabilisation - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: White balance
@@ -382,7 +382,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonWhiteBalance, &OMXcameraWhiteBalance))
     {
         printf("OMX Error: OMX set camera setting White balance - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: White balance gains (if white balance is set to off)
@@ -396,7 +396,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
         if (OMX_SetConfig(component->handle, OMX_IndexConfigCustomAwbGains, &OMXcameraWhiteBalanceGains))
         {
             printf("OMX Error: OMX set camera setting White balance gains - EXITING APPLICATION\n");
-            std::exit(1);
+            kill(getpid(), SIGKILL);
         }
     }
 
@@ -409,7 +409,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonImageFilter, &OMXcameraImageFilter))
     {
         printf("OMX Error: OMX set camera setting Image filter - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Mirror
@@ -421,7 +421,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonMirror, &OMXcameraMirror))
     {
         printf("OMX Error: OMX set camera setting Mirror - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Rotation
@@ -433,7 +433,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonRotate, &OMXcameraRotation))
     {
         printf("OMX Error: OMX set camera setting Rotation - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Color enhancement
@@ -447,7 +447,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigCommonColorEnhancement, &OMXcameraColorEnhancement))
     {
         printf("OMX Error: OMX set camera setting Color enhancement - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: Denoise
@@ -458,7 +458,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigStillColourDenoiseEnable, &OMXcameraDenoise))
     {
         printf("OMX Error: OMX set camera setting Denoise - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: ROI
@@ -473,7 +473,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigInputCropPercentages, &OMXcameraRoi))
     {
         printf("OMX Error: OMX set camera setting ROI - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: DRC
@@ -484,7 +484,7 @@ void OMXSetupCamera(OMXComponent* component, int cameraWidth, int cameraHeight)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigDynamicRangeExpansion, &OMXcameraDrc))
     {
         printf("OMX Error: OMX set camera setting DRC - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -496,7 +496,7 @@ void OMXStartCameraCapturing(OMXComponent* component, int port)
     if (component->id != OMX_COMPONENT_CAMERA_ID)
     {
         printf("OMX Error: Start camera called on wrong component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup camera component: DRC
@@ -508,7 +508,7 @@ void OMXStartCameraCapturing(OMXComponent* component, int port)
     if (OMX_SetConfig(component->handle, OMX_IndexConfigPortCapturing, &OMXcameraCapturePort))
     {
         printf("OMX Error: OMX start camera capturing - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -520,14 +520,14 @@ void OMXSetupEGLRender(OMXComponent* component, EGLImageKHR* eglImage, OMX_BUFFE
     if (component->id != OMX_COMPONENT_EGL_RENDER_ID)
     {
         printf("OMX Error: Setup egl render called on wrong component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup egl render component: Set output buffer and output eglImage
     if (OMX_UseEGLImage(component->handle, outputBufferHeader, OMX_PORT_EGL_RENDER_VIDEO_OUTPUT, NULL, (*eglImage)))
     {
         printf("OMX Error: OMX setup egl render image - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -539,7 +539,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (component->id != OMX_COMPONENT_IMAGE_ENCODE_ID)
     {
         printf("OMX Error: Setup image encode settings called on wrong component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: Prepare structure for input port
@@ -551,7 +551,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_GetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXimageEncodeInputPort))
     {
         printf("OMX Error: OMX get image encode input port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: Change settings for image encoding
@@ -570,7 +570,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_SetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXimageEncodeInputPort))
     {
         printf("OMX Error: OMX set image encode input port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: Prepare structure for output port
@@ -582,7 +582,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_GetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXimageEncodeOutputPort))
     {
         printf("OMX Error: OMX get image encode output port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: Change settings for image encoding
@@ -597,7 +597,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_SetParameter(component->handle, OMX_IndexParamPortDefinition, &OMXimageEncodeOutputPort))
     {
         printf("OMX Error: OMX set image encode output port settings - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: JPEG quality
@@ -609,7 +609,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_SetParameter(component->handle, OMX_IndexParamQFactor, &OMXimageEncodeQuality))
     {
         printf("OMX Error: OMX set image encode JPEG quality - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: JPEG EXIF
@@ -620,7 +620,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_SetParameter(component->handle, OMX_IndexParamBrcmDisableEXIF, &OMXimageEncodeExif))
     {
         printf("OMX Error: OMX set image encode JPEG EXIF - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: JPEG IJG
@@ -632,7 +632,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_SetParameter(component->handle, OMX_IndexParamBrcmEnableIJGTableScaling, &OMXimageEncodeIjg))
     {
         printf("OMX Error: OMX set image encode JPEG IJG - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component settings: JPEG Thumbnail
@@ -646,7 +646,7 @@ void OMXSetupImageEncodeSettings(OMXComponent* component, int cameraWidth, int c
     if (OMX_SetParameter(component->handle, OMX_IndexParamBrcmThumbnail, &OMXimageEncodeThumbnail))
     {
         printf("OMX Error: OMX set image encode JPEG thumbnail - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -658,14 +658,14 @@ void OMXSetupImageEncodeAllocate(OMXComponent* component, GLubyte* inputBuffer, 
     if (component->id != OMX_COMPONENT_IMAGE_ENCODE_ID)
     {
         printf("OMX Error: Setup image encode allocate called on wrong component %s - EXITING APPLICATION\n", component->name);
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component allocate: Set allocated buffer for input port
     if (OMX_UseBuffer(component->handle, inputBufferHeader, OMX_PORT_IMAGE_ENCODE_IMAGE_INPUT, NULL, 4 * cameraWidth * cameraHeight, inputBuffer))
     {
         printf("OMX Error: OMX allocate input buffer image encode - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup image encode component allocate: Allocate output buffer for output port
@@ -673,7 +673,7 @@ void OMXSetupImageEncodeAllocate(OMXComponent* component, GLubyte* inputBuffer, 
     if (OMX_AllocateBuffer(component->handle, outputBufferHeader, OMX_PORT_IMAGE_ENCODE_IMAGE_OUTPUT, NULL, 2 * cameraWidth * cameraHeight))
     {
         printf("OMX Error: OMX allocate output buffer image encode - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 }
 
@@ -747,7 +747,7 @@ void visicamRPiGPU::setup()
     if (OMX_Init())
     {
         printf("OMX Error: OMX init - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Initialize OMXcameraComponent: Initialize, set component id and name, set VCOS flags, register OMX handle
@@ -811,14 +811,14 @@ void visicamRPiGPU::setup()
     if (OMX_SetupTunnel(OMXcameraComponent.handle, OMX_PORT_CAMERA_PREVIEW_VIDEO_OUTPUT, OMXnullSinkComponent.handle, OMX_PORT_NULL_SINK_VIDEO_INPUT))
     {
         printf("OMX Error: OMX tunnel OMXcameraComponent (preview video out) => OMXnullSinkComponent (video in) - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup tunnel: OMXcameraComponent (real video output) => OMXeglRenderComponent (video input)
     if (OMX_SetupTunnel(OMXcameraComponent.handle, OMX_PORT_CAMERA_REAL_VIDEO_OUTPUT, OMXeglRenderComponent.handle, OMX_PORT_EGL_RENDER_VIDEO_INPUT))
     {
         printf("OMX Error: OMX tunnel OMXcameraComponent (real video out) => OMXeglRenderComponent (video in) - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup state: Set all components to state idle
@@ -855,7 +855,7 @@ void visicamRPiGPU::setup()
     if (!eglImage)
     {
         printf("OMX Error: OMX create egl image - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Setup OMXeglRenderComponent: Setup output buffer and output eglImage object
@@ -895,6 +895,18 @@ void visicamRPiGPU::update()
     {
         // Set new last refresh timer
         clock_gettime(CLOCK_MONOTONIC, &lastRefreshTimespec);
+
+        // Check if parent PID is alive, if it is set
+        if (parentCheckPid)
+        {
+            // Check if parent PID is running by sending 0 signal with kill
+            if (kill(parentCheckPid, 0))
+            {
+                // Kill self if parent is not running anymore
+                printf("Parent PID application with PID %u does not run anymore - EXITING APPLICATION\n", parentCheckPid);
+                kill(getpid(), SIGKILL);
+            }
+        }
 
         // Set flag for original captured image output
         outputCapturedOriginalImage = true;
@@ -966,7 +978,7 @@ void visicamRPiGPU::update()
     if (OMX_FillThisBuffer(OMXeglRenderComponent.handle, OMXeglRenderOutputBufferHeader))
     {
         printf("OMX Error: OMX egl render component fill buffer failed - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // OMXeglRenderComponent: Wait until output buffer is completely ready, component has processed input and hands output buffer back to application
@@ -989,7 +1001,7 @@ void visicamRPiGPU::update()
     if (OMX_FillThisBuffer(OMXimageEncodeComponent.handle, OMXimageEncodeOutputBufferHeader))
     {
         printf("OMX Error: OMX image encode component fill buffer failed - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // OMXimageEncodeComponent: Set filled length of input buffer to full length, hand back input buffer to the component and start reading
@@ -997,7 +1009,7 @@ void visicamRPiGPU::update()
     if (OMX_EmptyThisBuffer(OMXimageEncodeComponent.handle, OMXimageEncodeInputBufferHeader))
     {
         printf("OMX Error: OMX image encode component empty buffer failed - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // OMXimageEncodeComponent: Wait until input buffer is completely read, component processes input and hands input buffer back to application

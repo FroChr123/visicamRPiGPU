@@ -167,6 +167,7 @@ class visicamRPiGPU : public ofBaseApp
         int width;
         int height;
         int refreshTimeSeconds;
+        int parentCheckPid;
         std::string homographyInputPath;
         std::string processedOutputPath;
         std::string capturedOutputPath;

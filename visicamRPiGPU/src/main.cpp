@@ -22,24 +22,26 @@
 // Argument 1: (int) Width pixel
 // Argument 2: (int) Height pixel
 // Argument 3: (int) Refresh time in seconds (captured original output image, homography input matrix)
-// Argument 4: (string) Homography matrix input path
-// Argument 5: (string) Processed output image path
-// Argument 6: (string) Captured output image path
+// Argument 4: (int) PID of parent process, kill self if it does not run, 0 = ignore
+// Argument 5: (string) Homography matrix input path
+// Argument 6: (string) Processed output image path
+// Argument 7: (string) Captured output image path
 int main(int argc, char *argv[])
 {
     // Quit if argument count does not match
-    if (argc != 7)
+    if (argc != 8)
     {
         printf("\n####### USAGE: #######\n");
         printf("Argument 1: (int) Width pixel\n");
         printf("Argument 2: (int) Height pixel\n");
         printf("Argument 3: (int) Refresh time in seconds (captured original output image, homography input matrix)\n");
-        printf("Argument 4: (string) Homography matrix input path\n");
-        printf("Argument 5: (string) Processed output image path\n");
-        printf("Argument 6: (string) Captured output image path\n\n");
+        printf("Argument 4: (int) PID of parent process, kill self if it does not run, 0 = ignore\n");
+        printf("Argument 5: (string) Homography matrix input path\n");
+        printf("Argument 6: (string) Processed output image path\n");
+        printf("Argument 7: (string) Captured output image path\n\n");
 
         printf("Argument error: Incorrect amount of arguments - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Information for program
@@ -70,43 +72,44 @@ int main(int argc, char *argv[])
     app.width = atoi(argv[1]);
     app.height = atoi(argv[2]);
     app.refreshTimeSeconds = atoi(argv[3]);
-    app.homographyInputPath = std::string(argv[4]);
-    app.processedOutputPath = std::string(argv[5]);
-    app.capturedOutputPath = std::string(argv[6]);
+    app.parentCheckPid = atoi(argv[4]);
+    app.homographyInputPath = std::string(argv[5]);
+    app.processedOutputPath = std::string(argv[6]);
+    app.capturedOutputPath = std::string(argv[7]);
 
     // Check refresh time: Must be more than 0 seconds
     if (app.refreshTimeSeconds <= 0)
     {
         printf("Argument error: Refresh time must be more than 0 seconds - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Check resolution values: Width must be between 640 and 1920 pixels (camera resolutions)
     if (app.width < 640 || app.width > 1920)
     {
         printf("Argument error: Width must be between 640 and 1920 pixels (camera resolutions) - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Check resolution values: Height must be between 480 and 1080 pixels (camera resolutions)
     if (app.height < 480 || app.height > 1080)
     {
         printf("Argument error: Height must be between 480 and 1080 pixels (camera resolutions) - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Check resolution values: Width must be multiple of 32 (OMX component requirements: format.image.nStride)
     if ((app.width % 32) != 0)
     {
         printf("Argument error: Width must be a multiple of 32  (OMX component requirements: format.image.nStride) - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Check resolution values: Height must be multiple of 16 (OMX component requirements: format.image.nSliceHeight)
     if ((app.height % 16) != 0)
     {
         printf("Argument error: Height must be multiple of 16 (OMX component requirements: format.image.nSliceHeight) - EXITING APPLICATION\n");
-        std::exit(1);
+        kill(getpid(), SIGKILL);
     }
 
     // Load special renderer for OpenGL ES
