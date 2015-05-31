@@ -29,6 +29,7 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <fstream>
+#include <signal.h>
 #include <stdlib.h>
 #include <string>
 #include <time.h>
@@ -153,8 +154,11 @@ void OMXSetupImageEncodeAllocate(OMXComponent* component, GLubyte* inputBuffer, 
 CUSTOM FUNCTIONS
 ##################################### */
 
-// Custom functions
+// Check if file exists
 bool fileExists(std::string path);
+
+// Catch kill signals, send SIGKILL to self (might not stop otherwise)
+void signalHandler(int signal);
 
 /* #####################################
 MAIN APP

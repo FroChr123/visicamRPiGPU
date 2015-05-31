@@ -687,12 +687,40 @@ bool fileExists(std::string path)
     return (access(path.c_str(), F_OK) != -1);
 }
 
+// Catch kill signals, send SIGKILL to self (might not stop otherwise)
+void signalHandler(int signal)
+{
+    switch (signal)
+    {
+        case SIGHUP:
+        case SIGINT:
+        case SIGQUIT:
+        case SIGTERM:
+        case SIGABRT:
+        case SIGTSTP:
+            printf("Signal: Received killing signal with ID: %u - EXITING APPLICATION\n", signal);
+            kill(getpid(), SIGKILL);
+            break;
+        default:
+            break;
+    }
+}
+
 /* #####################################
 MAIN APP
 ##################################### */
 
 void visicamRPiGPU::setup()
 {
+    // Register signals with custom signal handler
+    // Overwrite default openFrameworks signal handler
+    signal(SIGHUP, signalHandler);
+    signal(SIGINT, signalHandler);
+    signal(SIGQUIT, signalHandler);
+    signal(SIGTERM, signalHandler);
+    signal(SIGABRT, signalHandler);
+    signal(SIGTSTP, signalHandler);
+
     // Settings
     ofSetFrameRate(30);
     ofBackground(0, 0, 0);
