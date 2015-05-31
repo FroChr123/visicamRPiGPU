@@ -34,6 +34,11 @@
 #include <time.h>
 
 /* #####################################
+MISC DEFINES
+##################################### */
+#define FIRST_FORCED_REFRESH_SECONDS            3
+
+/* #####################################
 OMX
 ##################################### */
 
@@ -193,6 +198,7 @@ class visicamRPiGPU : public ofBaseApp
         // Other variables
         struct timespec lastRefreshTimespec;
         struct timespec currentTimespec;
+        bool firstForcedRefresh;
         bool outputCapturedOriginalImage;
         float homographyInputMatrixValues[9];
         ofMatrix4x4 homographyInputMatrix;

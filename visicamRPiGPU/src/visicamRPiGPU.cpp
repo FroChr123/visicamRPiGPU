@@ -713,6 +713,9 @@ void visicamRPiGPU::setup()
     currentTimespec.tv_sec = 0;
     currentTimespec.tv_sec = 0;
 
+    // Initialize forcedFirstRefresh
+    firstForcedRefresh = false;
+
     // Initialize output captured original image with false, will be done in each refresh
     outputCapturedOriginalImage = false;
 
@@ -891,8 +894,21 @@ void visicamRPiGPU::update()
     clock_gettime(CLOCK_MONOTONIC, &currentTimespec);
 
     // Check against last refresh timer, if we need to refresh. 0 values => was just initialized, need to refresh aswell
-    if ((currentTimespec.tv_sec - lastRefreshTimespec.tv_sec >= refreshTimeSeconds) || (lastRefreshTimespec.tv_sec == 0 && lastRefreshTimespec.tv_nsec == 0))
+    if ((lastRefreshTimespec.tv_sec == 0 && lastRefreshTimespec.tv_nsec == 0)
+        || (firstForcedRefresh && (currentTimespec.tv_sec - lastRefreshTimespec.tv_sec >= FIRST_FORCED_REFRESH_SECONDS))
+        || (currentTimespec.tv_sec - lastRefreshTimespec.tv_sec >= refreshTimeSeconds))
     {
+        // Application is just starting, force first refresh after FIRST_FORCED_REFRESH_SECONDS as next refresh
+        // Camera needs some time to adjust settings correctly, otherwise it would take the full refresh amount for the first correct original image
+        if (lastRefreshTimespec.tv_sec == 0 && lastRefreshTimespec.tv_nsec == 0)
+        {
+            firstForcedRefresh = true;
+        }
+        else
+        {
+            firstForcedRefresh = false;
+        }
+
         // Set new last refresh timer
         clock_gettime(CLOCK_MONOTONIC, &lastRefreshTimespec);
 
