@@ -963,7 +963,7 @@ void visicamRPiGPU::update()
             if (homographyInputFile != -1)
             {
                 // Lock file
-                if (flock(homographyInputFile, LOCK_EX) != -1)
+                if (lockf(homographyInputFile, F_LOCK, 0) != -1)
                 {
                     // Open input filestream
                     std::ifstream homographyInputStream(homographyInputPath.c_str());
@@ -1007,7 +1007,7 @@ void visicamRPiGPU::update()
                     }
 
                     // Unlock file
-                    flock(homographyInputFile, LOCK_UN);
+                    lockf(homographyInputFile, F_ULOCK, 0);
                 }
 
                 // Always close file if opened successfully
@@ -1076,7 +1076,7 @@ void visicamRPiGPU::update()
         if (imageOutputFile != -1)
         {
             // Lock file
-            if (flock(imageOutputFile, LOCK_EX) != -1)
+            if (lockf(imageOutputFile, F_LOCK, 0) != -1)
             {
                 // Valid bytes begin at OMXimageEncodeOutputBufferHeader->pBuffer + OMXimageEncodeOutputBufferHeader->nOffset
                 // Length of valid bytes is stored in OMXimageEncodeOutputBufferHeader->nFilledLen
@@ -1087,7 +1087,7 @@ void visicamRPiGPU::update()
                 }
 
                 // Unlock file
-                flock(imageOutputFile, LOCK_UN);
+                lockf(imageOutputFile, F_ULOCK, 0);
             }
 
             // Always close file if opened successfully
