@@ -28,11 +28,13 @@
 
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <fstream>
 #include <signal.h>
 #include <stdlib.h>
 #include <string>
 #include <time.h>
+#include <unistd.h>
 
 /* #####################################
 MISC DEFINES

@@ -959,7 +959,7 @@ void visicamRPiGPU::update()
         if (fileExists(homographyInputPath))
         {
             // Open file
-            int homographyInputFile = open(homographyInputPath.c_str(), O_RDONLY);
+            int homographyInputFile = open(homographyInputPath.c_str(), O_RDWR);
             if (homographyInputFile != -1)
             {
                 // Lock file
@@ -1007,7 +1007,10 @@ void visicamRPiGPU::update()
                     }
 
                     // Unlock file
-                    lockf(homographyInputFile, F_ULOCK, 0);
+                    if (lockf(homographyInputFile, F_ULOCK, 0) == -1)
+                    {
+                        // Suppress compiler warning by this check, error in file unlocking, but we can not do anything about it anyways
+                    }
                 }
 
                 // Always close file if opened successfully
@@ -1066,8 +1069,23 @@ void visicamRPiGPU::update()
     // Check if there is data to write
     if (OMXimageEncodeOutputBufferHeader->nFilledLen > 0)
     {
+        // Determine filepath
+        std::string outputPath = (outputCapturedOriginalImage ? capturedOutputPath : processedOutputPath);
+
+        // Create file if neccessary
+        if (!fileExists(outputPath))
+        {
+            int createOutputFile = open(outputPath.c_str(), O_CREAT, 0644);
+
+            if (createOutputFile != -1)
+            {
+                close(createOutputFile);
+            }
+        }
+
         // Open file
-        int imageOutputFile = open((outputCapturedOriginalImage ? capturedOutputPath.c_str() : processedOutputPath.c_str()), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        // Do not use O_CREAT or O_TRUNC here, writing access out of file locked area!
+        int imageOutputFile = open(outputPath.c_str(), O_RDWR);
 
         // Reset flag for output captured original image
         outputCapturedOriginalImage = false;
@@ -1078,16 +1096,24 @@ void visicamRPiGPU::update()
             // Lock file
             if (lockf(imageOutputFile, F_LOCK, 0) != -1)
             {
+                // Truncate file
+                if (ftruncate(imageOutputFile, 0) == -1)
+                {
+                    // Suppress compiler warning by this check, error in file truncating, but we can not do anything about it anyways
+                }
+
                 // Valid bytes begin at OMXimageEncodeOutputBufferHeader->pBuffer + OMXimageEncodeOutputBufferHeader->nOffset
                 // Length of valid bytes is stored in OMXimageEncodeOutputBufferHeader->nFilledLen
-                // Check result to avoid compiler warning, no need to check it at all
                 if (pwrite(imageOutputFile, OMXimageEncodeOutputBufferHeader->pBuffer + OMXimageEncodeOutputBufferHeader->nOffset, OMXimageEncodeOutputBufferHeader->nFilledLen, 0) == -1)
                 {
-                    // Error in file writing, but we can not do anything about it anyways
+                    // Suppress compiler warning by this check, error in file writing, but we can not do anything about it anyways
                 }
 
                 // Unlock file
-                lockf(imageOutputFile, F_ULOCK, 0);
+                if (lockf(imageOutputFile, F_ULOCK, 0) == -1)
+                {
+                    // Suppress compiler warning by this check, error in file unlocking, but we can not do anything about it anyways
+                }
             }
 
             // Always close file if opened successfully
