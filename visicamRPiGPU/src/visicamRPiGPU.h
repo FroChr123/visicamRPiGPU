@@ -18,6 +18,7 @@
 
 #include "ofMain.h"
 #include "ofAppEGLWindow.h"
+#include "visicamRPiGPU-settings.h"
 
 #include <bcm_host.h>
 #include <IL/OMX_Broadcom.h>
@@ -35,11 +36,6 @@
 #include <string>
 #include <time.h>
 #include <unistd.h>
-
-/* #####################################
-MISC DEFINES
-##################################### */
-#define FIRST_FORCED_REFRESH_SECONDS            3
 
 /* #####################################
 OMX
@@ -81,47 +77,6 @@ OMX
 #define OMX_PORT_NULL_SINK_AUDIO_INPUT          242
 #define OMX_PORT_IMAGE_ENCODE_IMAGE_INPUT       340
 #define OMX_PORT_IMAGE_ENCODE_IMAGE_OUTPUT      341
-
-// JPEG settings
-#define OMX_JPEG_QUALITY                        100     // Allowed values: 0 to 100
-#define OMX_JPEG_EXIF_ENABLE                    OMX_FALSE
-#define OMX_JPEG_IJG_ENABLE                     OMX_TRUE
-#define OMX_JPEG_THUMBNAIL_ENABLE               OMX_FALSE
-#define OMX_JPEG_THUMBNAIL_PREVIEW_ENABLE       OMX_FALSE
-#define OMX_JPEG_THUMBNAIL_WIDTH                0
-#define OMX_JPEG_THUMBNAIL_HEIGHT               0
-
-// Camera settings
-#define OMX_CAM_SHARPNESS                       0       // Allowed values: -100 to 100
-#define OMX_CAM_CONTRAST                        0       // Allowed values: -100 to 100
-#define OMX_CAM_BRIGHTNESS                      50      // Allowed values: 0 to 100
-#define OMX_CAM_SATURATION                      0       // Allowed values: -100 to 100
-#define OMX_CAM_ISO                             100     // Allowed values: 100 to 800
-#define OMX_CAM_EXPOSURE_COMPENSATION           0       // Allowed values: -24 to 24
-#define OMX_CAM_ROTATION                        0       // Allowed values: 0, 90, 180, 270
-#define OMX_CAM_COLOR_U                         128     // Allowed values: 0 to 255
-#define OMX_CAM_COLOR_V                         128     // Allowed values: 0 to 255
-#define OMX_CAM_ROI_TOP                         0       // Allowed values: 0 to 100
-#define OMX_CAM_ROI_LEFT                        0       // Allowed values: 0 to 100
-#define OMX_CAM_ROI_WIDTH                       100     // Allowed values: 0 to 100
-#define OMX_CAM_ROI_HEIGHT                      100     // Allowed values: 0 to 100
-#define OMX_CAM_FRAMERATE                       30
-#define OMX_CAM_PREVIEW_WIDTH                   640
-#define OMX_CAM_PREVIEW_HEIGHT                  480
-#define OMX_CAM_SHUTTER_SPEED_AUTO              OMX_TRUE
-#define OMX_CAM_SHUTTER_SPEED                   125000
-#define OMX_CAM_ISO_AUTO                        OMX_TRUE
-#define OMX_CAM_EXPOSURE                        OMX_ExposureControlAuto
-#define OMX_CAM_MIRROR                          OMX_MirrorNone
-#define OMX_CAM_COLOR_ENABLE                    OMX_FALSE
-#define OMX_CAM_NOISE_REDUCTION                 OMX_TRUE
-#define OMX_CAM_FRAME_STABILIZATION             OMX_FALSE
-#define OMX_CAM_METERING                        OMX_MeteringModeAverage
-#define OMX_CAM_WHITE_BALANCE                   OMX_WhiteBalControlAuto
-#define OMX_CAM_WHITE_BALANCE_RED_GAIN          1000
-#define OMX_CAM_WHITE_BALANCE_BLUE_GAIN         1000
-#define OMX_CAM_IMAGE_FILTER                    OMX_ImageFilterNone
-#define OMX_CAM_DRC                             OMX_DynRangeExpOff
 
 // OMX component struct definition
 typedef struct
